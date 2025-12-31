@@ -19,6 +19,12 @@ const builderSteps = [
   'Đặt hàng, nhận cấu hình lắp ráp & checklist đi kèm.',
 ]
 
+const trustBadges = [
+  { title: 'Bảo hành tại nhà', desc: 'Kỹ thuật viên đến tận nơi tại HN/HCM' },
+  { title: 'Gói lắp ráp cao cấp', desc: 'Vệ sinh cable, test stress & cài driver' },
+  { title: 'Ưu đãi thành viên', desc: 'Tích điểm 3-7% cho mỗi đơn hàng' },
+]
+
 export default function Home() {
   const [items, setItems] = useState(null)
 
@@ -71,6 +77,24 @@ export default function Home() {
               <b>AI Chat, hướng dẫn build, so sánh cấu hình</b>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 18 }}>
+        <div className="section-header">
+          <div>
+            <h3 className="section-title">Yên tâm mua sắm</h3>
+            <p className="section-sub">Dịch vụ hậu mãi và trải nghiệm cao cấp cho người yêu công nghệ</p>
+          </div>
+          <div className="chip">Hỗ trợ 1-1 • Checklist QA • Test hiệu năng</div>
+        </div>
+        <div className="service-grid">
+          {trustBadges.map((s) => (
+            <div key={s.title} className="service-card">
+              <div className="pill secondary">{s.title}</div>
+              <p className="muted" style={{ margin: '8px 0 0' }}>{s.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
 

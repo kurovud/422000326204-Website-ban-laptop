@@ -7,7 +7,7 @@ export default function Header() {
   const { count } = useCart()
 
   return (
-    <header style={{ background: 'rgba(255,255,255,0.92)', borderBottom: '1px solid rgba(15,23,42,0.08)', position: 'sticky', top: 0, zIndex: 20, backdropFilter: 'blur(12px)', boxShadow: '0 10px 30px rgba(15,23,42,0.12)' }}>
+    <header style={{ background: 'rgba(255,255,255,0.95)', borderBottom: '1px solid rgba(15,23,42,0.08)', position: 'sticky', top: 0, zIndex: 20, backdropFilter: 'blur(14px)', boxShadow: '0 10px 32px rgba(15,23,42,0.16)' }}>
       <div className="container nav">
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>

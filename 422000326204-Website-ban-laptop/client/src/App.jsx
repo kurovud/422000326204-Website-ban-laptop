@@ -13,6 +13,7 @@ import AdminDashboard from './pages/Admin/Dashboard.jsx'
 import ManageProduct from './pages/Admin/ManageProduct.jsx'
 import ManageOrder from './pages/Admin/ManageOrder.jsx'
 import ManageUser from './pages/Admin/ManageUser.jsx'
+import AssistantWidget from './components/Assistant/AssistantWidget.jsx'
 
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { CartProvider } from './context/CartContext.jsx'
@@ -49,6 +50,7 @@ export default function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
+          <AssistantWidget />
           <Footer />
         </div>
       </CartProvider>

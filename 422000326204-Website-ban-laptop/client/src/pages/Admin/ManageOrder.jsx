@@ -9,21 +9,34 @@ export default function ManageOrder() {
   const [filter, setFilter] = useState('')
   const [loading, setLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
+  const [message, setMessage] = useState(null)
 
   const load = async () => {
     setLoading(true)
-    const res = await listOrdersAdmin()
-    setOrders(res.data || [])
-    setLoading(false)
+    try {
+      const res = await listOrdersAdmin()
+      setOrders(res.data || [])
+      setMessage(null)
+    } catch (e) {
+      setMessage({ type: 'error', text: 'Không tải được danh sách đơn hàng' })
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [])
 
   const onUpdate = async (id, status) => {
     setRefreshing(true)
-    await updateOrderStatus(id, status)
-    await load()
-    setRefreshing(false)
+    try {
+      await updateOrderStatus(id, status)
+      setMessage({ type: 'success', text: 'Đã cập nhật trạng thái' })
+      await load()
+    } catch (e) {
+      setMessage({ type: 'error', text: 'Cập nhật trạng thái thất bại' })
+    } finally {
+      setRefreshing(false)
+    }
   }
 
   const filtered = orders.filter(o => !filter || o.status === filter)
@@ -36,6 +49,8 @@ export default function ManageOrder() {
     <div className="card">
       <h2>Quản lý đơn hàng</h2>
       <p className="muted">Theo dõi tiến độ, cập nhật trạng thái và hỗ trợ khách hàng.</p>
+
+      {message && <div className={`alert ${message.type}`}>{message.text}</div>}
 
       <div className="grid" style={{ marginBottom: 12 }}>
         {summary.map((s) => (
@@ -51,7 +66,7 @@ export default function ManageOrder() {
           <option value="">Tất cả trạng thái</option>
           {statuses.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
-        <button className="btn btn-outline" onClick={load}>Làm mới</button>
+        <button className="btn btn-outline" onClick={load} disabled={loading}>Làm mới</button>
       </div>
 
       {loading && <div className="muted">Đang tải...</div>}

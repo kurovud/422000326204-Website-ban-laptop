@@ -80,6 +80,10 @@ export default function Home() {
         </div>
       </div>
 
+      {!items.data.length && (
+        <div className="alert info">Chưa có sản phẩm nào trong hệ thống. Vui lòng thêm sản phẩm từ trang Admin.</div>
+      )}
+
       <div style={{ marginTop: 18 }}>
         <div className="section-header">
           <div>

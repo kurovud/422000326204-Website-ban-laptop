@@ -8,11 +8,27 @@ export default function Dashboard() {
   const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
   const [users, setUsers] = useState([])
+  const [error, setError] = useState(null)
+  const [updatedAt, setUpdatedAt] = useState(null)
 
   useEffect(() => {
-    listOrdersAdmin().then(res => setOrders(res.data || []))
-    getProducts().then(res => setProducts(res.data || []))
-    listUsers().then(res => setUsers(res.data || []))
+    const load = async () => {
+      try {
+        const [o, p, u] = await Promise.all([
+          listOrdersAdmin(),
+          getProducts(),
+          listUsers()
+        ])
+        setOrders(o.data || [])
+        setProducts(p.data || [])
+        setUsers(u.data || [])
+        setUpdatedAt(new Date())
+        setError(null)
+      } catch (e) {
+        setError('Không tải được dữ liệu dashboard')
+      }
+    }
+    load()
   }, [])
 
   const revenue = useMemo(() => orders.reduce((sum, o) => sum + Number(o.total), 0), [orders])
@@ -36,6 +52,8 @@ export default function Dashboard() {
     <div className="card">
       <h2>Trang quản trị TechShop</h2>
       <p className="muted">Theo dõi sức khoẻ vận hành, trạng thái đơn hàng và sản phẩm.</p>
+      {error && <div className="alert error">{error}</div>}
+      {updatedAt && <div className="alert info">Cập nhật lúc: {updatedAt.toLocaleString('vi-VN')}</div>}
 
       <div className="grid">
         {cards.map((c) => (

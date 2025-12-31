@@ -11,27 +11,48 @@ export default function ManageProduct() {
   const [q, setQ] = useState('')
   const [type, setType] = useState('')
   const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState(null)
 
   const load = async () => {
     setLoading(true)
-    const res = await getProducts({ q, type })
-    setItems(res.data || [])
-    setLoading(false)
+    try {
+      const res = await getProducts({ q, type })
+      setItems(res.data || [])
+      setMessage(null)
+    } catch (e) {
+      setMessage({ type: 'error', text: 'Không tải được danh sách sản phẩm' })
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [q, type])
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
-    if (editingId) {
-      await updateProduct(editingId, form)
-    } else {
-      await createProduct(form)
+    if (!form.sku || !form.name) return
+    if (form.price < 0 || form.stock < 0) {
+      setMessage({ type: 'error', text: 'Giá và tồn kho phải lớn hơn hoặc bằng 0' })
+      return
     }
-    setForm(emptyProduct)
-    setEditingId(null)
-    await load()
+    setSaving(true)
+    try {
+      if (editingId) {
+        await updateProduct(editingId, form)
+        setMessage({ type: 'success', text: 'Cập nhật sản phẩm thành công' })
+      } else {
+        await createProduct(form)
+        setMessage({ type: 'success', text: 'Thêm sản phẩm thành công' })
+      }
+      setForm(emptyProduct)
+      setEditingId(null)
+      await load()
+    } catch (err) {
+      setMessage({ type: 'error', text: 'Lưu sản phẩm thất bại, vui lòng thử lại' })
+    } finally {
+      setSaving(false)
+    }
   }
 
   const onEdit = (p) => {
@@ -48,9 +69,16 @@ export default function ManageProduct() {
 
   const onDelete = async (id) => {
     if (!window.confirm('Xoá sản phẩm này?')) return
-    setLoading(true)
-    await deleteProduct(id)
-    await load()
+    setSaving(true)
+    try {
+      await deleteProduct(id)
+      setMessage({ type: 'success', text: 'Đã xoá sản phẩm' })
+      await load()
+    } catch (e) {
+      setMessage({ type: 'error', text: 'Không xoá được sản phẩm' })
+    } finally {
+      setSaving(false)
+    }
   }
 
   const grouped = useMemo(() => {
@@ -72,6 +100,8 @@ export default function ManageProduct() {
     <div className="card">
       <h2>Quản lý sản phẩm</h2>
       <p className="muted">Tạo, cập nhật, xoá sản phẩm; quản lý tồn kho và giá trị danh mục.</p>
+
+      {message && <div className={`alert ${message.type}`}>{message.text}</div>}
 
       <div className="grid" style={{ marginBottom: 12 }}>
         {stats.map((s) => (
@@ -99,7 +129,7 @@ export default function ManageProduct() {
         <textarea className="textarea" rows={3} placeholder="Mô tả" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
         <div className="row" style={{ justifyContent: 'flex-end' }}>
           {editingId && <button type="button" className="btn btn-outline" onClick={() => { setForm(emptyProduct); setEditingId(null) }}>Huỷ</button>}
-          <button className="btn btn-primary" type="submit">{editingId ? 'Cập nhật' : 'Thêm sản phẩm'}</button>
+          <button className="btn btn-primary" type="submit" disabled={saving}>{editingId ? 'Cập nhật' : 'Thêm sản phẩm'}</button>
         </div>
       </form>
 

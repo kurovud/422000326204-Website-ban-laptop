@@ -4,12 +4,19 @@ import { listUsers } from '../../services/user.service.js'
 export default function ManageUser() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState(null)
 
   const load = async () => {
     setLoading(true)
-    const res = await listUsers()
-    setUsers(res.data || [])
-    setLoading(false)
+    try {
+      const res = await listUsers()
+      setUsers(res.data || [])
+      setMessage(null)
+    } catch (e) {
+      setMessage({ type: 'error', text: 'Không tải được danh sách người dùng' })
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [])
@@ -24,11 +31,12 @@ export default function ManageUser() {
     <div className="card">
       <h2>Quản lý người dùng</h2>
       <p className="muted">Theo dõi tài khoản, vai trò và trạng thái hoạt động.</p>
+      {message && <div className={`alert ${message.type}`}>{message.text}</div>}
       <div className="row" style={{ marginBottom: 10, alignItems: 'center' }}>
         <div className="chip">Tổng: {stats.total}</div>
         <div className="chip">Admin: {stats.admins}</div>
         <div className="chip">Hoạt động: {stats.active}</div>
-        <button className="btn btn-outline" onClick={load}>Làm mới</button>
+        <button className="btn btn-outline" onClick={load} disabled={loading}>Làm mới</button>
       </div>
       {loading && <div className="muted">Đang tải...</div>}
 

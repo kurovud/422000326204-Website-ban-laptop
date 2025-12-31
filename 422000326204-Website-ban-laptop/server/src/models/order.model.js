@@ -35,3 +35,19 @@ export async function listMyOrders(userId) {
   )
   return rows
 }
+
+export async function listAllOrders() {
+  const [rows] = await pool.query(
+    `SELECT o.id, o.code, o.status, o.total, o.created_at, u.email
+     FROM orders o
+     JOIN users u ON u.id = o.user_id
+     ORDER BY o.created_at DESC
+     LIMIT 300`
+  )
+  return rows
+}
+
+export async function updateOrderStatus(id, status) {
+  const [res] = await pool.query('UPDATE orders SET status=? WHERE id=?', [status, id])
+  return res.affectedRows === 1
+}

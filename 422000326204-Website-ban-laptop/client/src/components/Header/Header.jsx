@@ -7,15 +7,25 @@ export default function Header() {
   const { count } = useCart()
 
   return (
-    <header className="card" style={{ borderRadius: 0 }}>
+    <header style={{ background: 'rgba(255,255,255,0.95)', borderBottom: '1px solid rgba(15,23,42,0.08)', position: 'sticky', top: 0, zIndex: 20, backdropFilter: 'blur(14px)', boxShadow: '0 10px 32px rgba(15,23,42,0.16)' }}>
       <div className="container nav">
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          <Link to="/"><b>TechShop</b></Link>
-          <Link to="/products">Sản phẩm</Link>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+            <div className="pill">TechShop Pro</div>
+            <span className="muted">Laptop • PC • Build</span>
+          </Link>
+          <div className="nav-links">
+            <Link to="/products">Sản phẩm</Link>
+            <a href="#builder">Build PC</a>
+            <a href="#support">Hỗ trợ</a>
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <Link to="/cart">Giỏ hàng <span className="badge">{count}</span></Link>
+          <Link to="/cart" className="btn btn-ghost" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <span>Giỏ hàng</span>
+            <span className="badge">{count}</span>
+          </Link>
           {user ? (
             <>
               <span className="badge">{user.email} ({user.role})</span>
@@ -26,7 +36,7 @@ export default function Header() {
           ) : (
             <>
               <Link to="/login">Đăng nhập</Link>
-              <Link to="/register">Đăng ký</Link>
+              <Link to="/register" className="btn btn-primary">Tạo tài khoản</Link>
             </>
           )}
         </div>

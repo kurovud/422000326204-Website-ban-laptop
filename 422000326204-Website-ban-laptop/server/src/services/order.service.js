@@ -56,3 +56,17 @@ export async function createOrder({ userId, phone, shippingAddress, items }) {
 export async function myOrders(userId) {
   return await OrderModel.listMyOrders(userId)
 }
+
+export async function adminOrders() {
+  return await OrderModel.listAllOrders()
+}
+
+export async function changeStatus(id, status) {
+  const ok = await OrderModel.updateOrderStatus(id, status)
+  if (!ok) {
+    const err = new Error('Không tìm thấy đơn hàng')
+    err.status = 404
+    throw err
+  }
+  return true
+}

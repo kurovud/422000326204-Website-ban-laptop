@@ -28,3 +28,10 @@ export async function getRoleIdByName(name) {
   const [rows] = await pool.query('SELECT id FROM roles WHERE name=? LIMIT 1', [name])
   return rows[0]?.id || null
 }
+
+export async function listUsers() {
+  const [rows] = await pool.query(
+    'SELECT u.id, u.email, u.full_name, r.name AS role, u.is_active, u.created_at FROM users u JOIN roles r ON r.id=u.role_id ORDER BY u.created_at DESC LIMIT 300'
+  )
+  return rows
+}

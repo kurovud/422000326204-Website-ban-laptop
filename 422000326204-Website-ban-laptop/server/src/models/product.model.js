@@ -32,3 +32,24 @@ export async function decreaseStock(conn, productId, qty) {
   )
   return res.affectedRows === 1
 }
+
+export async function createProduct(payload) {
+  const [res] = await pool.query(
+    'INSERT INTO products (sku, name, type, price, stock, description) VALUES (?,?,?,?,?,?)',
+    [payload.sku, payload.name, payload.type, payload.price, payload.stock, payload.description || '']
+  )
+  return res.insertId
+}
+
+export async function updateProduct(id, payload) {
+  const [res] = await pool.query(
+    'UPDATE products SET sku=?, name=?, type=?, price=?, stock=?, description=? WHERE id=?',
+    [payload.sku, payload.name, payload.type, payload.price, payload.stock, payload.description || '', id]
+  )
+  return res.affectedRows === 1
+}
+
+export async function deleteProduct(id) {
+  const [res] = await pool.query('DELETE FROM products WHERE id=?', [id])
+  return res.affectedRows === 1
+}

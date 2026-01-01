@@ -3,6 +3,7 @@ import { listOrdersAdmin } from '../../services/order.service.js'
 import { getProducts } from '../../services/product.service.js'
 import { listUsers } from '../../services/user.service.js'
 import { formatPrice } from '../../utils/formatPrice.js'
+import AdminLayout from '../../components/Admin/AdminLayout.jsx'
 
 export default function Dashboard() {
   const [orders, setOrders] = useState([])
@@ -49,9 +50,10 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="card">
-      <h2>Trang quản trị TechShop</h2>
-      <p className="muted">Theo dõi sức khoẻ vận hành, trạng thái đơn hàng và sản phẩm.</p>
+    <AdminLayout
+      title="Trang quản trị TechShop"
+      subtitle="Theo dõi sức khoẻ vận hành, trạng thái đơn hàng và sản phẩm."
+    >
       {error && <div className="alert error">{error}</div>}
       {updatedAt && <div className="alert info">Cập nhật lúc: {updatedAt.toLocaleString('vi-VN')}</div>}
 
@@ -104,6 +106,6 @@ export default function Dashboard() {
           </table>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   )
 }

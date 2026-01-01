@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { listOrdersAdmin, updateOrderStatus } from '../../services/order.service.js'
 import { formatPrice } from '../../utils/formatPrice.js'
+import AdminLayout from '../../components/Admin/AdminLayout.jsx'
 
 const statuses = ['pending', 'paid', 'shipping', 'completed', 'cancelled']
 
@@ -46,9 +47,10 @@ export default function ManageOrder() {
   }))
 
   return (
-    <div className="card">
-      <h2>Quản lý đơn hàng</h2>
-      <p className="muted">Theo dõi tiến độ, cập nhật trạng thái và hỗ trợ khách hàng.</p>
+    <AdminLayout
+      title="Quản lý đơn hàng"
+      subtitle="Theo dõi tiến độ, cập nhật trạng thái và hỗ trợ khách hàng."
+    >
 
       {message && <div className={`alert ${message.type}`}>{message.text}</div>}
 
@@ -77,6 +79,8 @@ export default function ManageOrder() {
             <tr style={{ textAlign: 'left', background: '#f8fafc' }}>
               <th style={{ padding: 10 }}>Mã đơn</th>
               <th style={{ padding: 10 }}>Khách hàng</th>
+              <th style={{ padding: 10 }}>Sản phẩm</th>
+              <th style={{ padding: 10 }}>Giao nhận</th>
               <th style={{ padding: 10 }}>Tổng tiền</th>
               <th style={{ padding: 10 }}>Trạng thái</th>
               <th style={{ padding: 10 }}>Ngày</th>
@@ -88,6 +92,21 @@ export default function ManageOrder() {
               <tr key={o.id} style={{ borderTop: '1px solid #e2e8f0' }}>
                 <td style={{ padding: 10, fontWeight: 600 }}>{o.code}</td>
                 <td style={{ padding: 10 }}>{o.email}</td>
+                <td style={{ padding: 10, minWidth: 220 }}>
+                  {o.items?.length ? (
+                    <ul style={{ margin: 0, paddingLeft: 18 }}>
+                      {o.items.map((it) => (
+                        <li key={`${o.id}-${it.productId}-${it.qty}`}>
+                          {it.name} x{it.qty}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : <span className="muted">Chưa có mục</span>}
+                </td>
+                <td style={{ padding: 10 }}>
+                  <div className="muted">{o.phone}</div>
+                  <div>{o.shipping_address}</div>
+                </td>
                 <td style={{ padding: 10 }}>{formatPrice(o.total)}</td>
                 <td style={{ padding: 10 }}>
                   <span className={`status ${o.status}`}>{o.status}</span>
@@ -103,12 +122,12 @@ export default function ManageOrder() {
             ))}
             {!filtered.length && (
               <tr>
-                <td colSpan={6} style={{ padding: 12, color: '#64748b' }}>Không có đơn hàng.</td>
+                <td colSpan={8} style={{ padding: 12, color: '#64748b' }}>Không có đơn hàng.</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-    </div>
+    </AdminLayout>
   )
 }

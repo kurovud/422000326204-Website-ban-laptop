@@ -13,6 +13,7 @@ import AdminDashboard from './pages/Admin/Dashboard.jsx'
 import ManageProduct from './pages/Admin/ManageProduct.jsx'
 import ManageOrder from './pages/Admin/ManageOrder.jsx'
 import ManageUser from './pages/Admin/ManageUser.jsx'
+import InventoryFlow from './pages/Admin/InventoryFlow.jsx'
 import AssistantWidget from './components/Assistant/AssistantWidget.jsx'
 import Loading from './components/Loading/Loading.jsx'
 
@@ -34,6 +35,14 @@ function AdminRoute({ children }) {
   return children
 }
 
+function ManagerRoute({ children }) {
+  const { user, loading } = useAuth()
+  if (loading) return <Loading />
+  if (!user) return <Navigate to="/login" replace />
+  if (!['admin', 'staff'].includes(user.role)) return <Navigate to="/" replace />
+  return children
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -52,7 +61,8 @@ export default function App() {
               <Route path="/orders" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
 
               <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-              <Route path="/admin/products" element={<AdminRoute><ManageProduct /></AdminRoute>} />
+              <Route path="/admin/products" element={<ManagerRoute><ManageProduct /></ManagerRoute>} />
+              <Route path="/admin/inventory" element={<ManagerRoute><InventoryFlow /></ManagerRoute>} />
               <Route path="/admin/orders" element={<AdminRoute><ManageOrder /></AdminRoute>} />
               <Route path="/admin/users" element={<AdminRoute><ManageUser /></AdminRoute>} />
 

@@ -81,6 +81,7 @@ npm run dev
 ## 6) Tài khoản test (seed)
 - Admin: `admin@techshop.vn` / `Admin@123`
 - User:  `user@techshop.vn`  / `User@1234`
+- Staff (quản lý kho/sản phẩm): `staff@techshop.vn` / `Staff@123`
 
 > Nếu bạn muốn đảm bảo hash đúng, bạn có thể tự đăng ký user bằng API `/api/auth/register`.
 

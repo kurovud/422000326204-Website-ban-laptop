@@ -1,4 +1,5 @@
 import ManageProduct from './ManageProduct.jsx'
+import AdminLayout from '../../components/Admin/AdminLayout.jsx'
 
 const workflowSteps = [
   { title: 'Tiếp nhận & kiểm tra SKU', detail: 'Xác minh yêu cầu tạo/sửa, kiểm tra SKU trùng, rà soát loại sản phẩm (laptop/pc/linh kiện).' },
@@ -15,10 +16,13 @@ const guardrails = [
 
 export default function InventoryFlow() {
   return (
-    <>
+    <AdminLayout
+      title="Quy trình & quản lý hàng hóa"
+      subtitle="Thao tác đúng quy trình: tiếp nhận yêu cầu → kiểm tra SKU → cập nhật tồn kho/giá → công bố."
+    >
       <div className="card" style={{ marginBottom: 14 }}>
-        <h2>Quy trình nghiệp vụ quản lý sản phẩm</h2>
-        <p className="muted">
+        <h3 style={{ margin: '0 0 6px' }}>Quy trình nghiệp vụ quản lý sản phẩm</h3>
+        <p className="muted" style={{ marginTop: 0 }}>
           Dành cho nhân viên kho/merchandising: bám sát quy trình FPTShop (tiếp nhận → kiểm tra → cập nhật →
           công bố) để đảm bảo dữ liệu sản phẩm luôn đồng bộ và chính xác.
         </p>
@@ -41,7 +45,7 @@ export default function InventoryFlow() {
         </div>
       </div>
 
-      <ManageProduct />
-    </>
+      <ManageProduct embedded />
+    </AdminLayout>
   )
 }

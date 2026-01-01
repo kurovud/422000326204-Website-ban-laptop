@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { listOrdersAdmin, updateOrderStatus } from '../../services/order.service.js'
 import { formatPrice } from '../../utils/formatPrice.js'
+import AdminLayout from '../../components/Admin/AdminLayout.jsx'
 
 const statuses = ['pending', 'paid', 'shipping', 'completed', 'cancelled']
 
@@ -46,9 +47,10 @@ export default function ManageOrder() {
   }))
 
   return (
-    <div className="card">
-      <h2>Quản lý đơn hàng</h2>
-      <p className="muted">Theo dõi tiến độ, cập nhật trạng thái và hỗ trợ khách hàng.</p>
+    <AdminLayout
+      title="Quản lý đơn hàng"
+      subtitle="Theo dõi tiến độ, cập nhật trạng thái và hỗ trợ khách hàng."
+    >
 
       {message && <div className={`alert ${message.type}`}>{message.text}</div>}
 
@@ -126,6 +128,6 @@ export default function ManageOrder() {
           </tbody>
         </table>
       </div>
-    </div>
+    </AdminLayout>
   )
 }

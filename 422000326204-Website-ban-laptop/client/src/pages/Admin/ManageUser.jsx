@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { listUsers } from '../../services/user.service.js'
+import AdminLayout from '../../components/Admin/AdminLayout.jsx'
 
 export default function ManageUser() {
   const [users, setUsers] = useState([])
@@ -28,9 +29,10 @@ export default function ManageUser() {
   }
 
   return (
-    <div className="card">
-      <h2>Quản lý người dùng</h2>
-      <p className="muted">Theo dõi tài khoản, vai trò và trạng thái hoạt động.</p>
+    <AdminLayout
+      title="Quản lý người dùng"
+      subtitle="Theo dõi tài khoản, vai trò và trạng thái hoạt động."
+    >
       {message && <div className={`alert ${message.type}`}>{message.text}</div>}
       <div className="row" style={{ marginBottom: 10, alignItems: 'center' }}>
         <div className="chip">Tổng: {stats.total}</div>
@@ -69,6 +71,6 @@ export default function ManageUser() {
           </tbody>
         </table>
       </div>
-    </div>
+    </AdminLayout>
   )
 }

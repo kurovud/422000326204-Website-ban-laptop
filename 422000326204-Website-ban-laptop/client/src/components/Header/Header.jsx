@@ -30,6 +30,7 @@ export default function Header() {
             <>
               <span className="badge">{user.email} ({user.role})</span>
               <Link to="/orders">Đơn hàng</Link>
+              {['admin', 'staff'].includes(user.role) && <Link to="/admin/inventory">Quản lý hàng hóa</Link>}
               {user.role === 'admin' && <Link to="/admin">Admin</Link>}
               <button className="btn btn-outline" onClick={logout}>Đăng xuất</button>
             </>

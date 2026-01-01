@@ -25,6 +25,14 @@ const trustBadges = [
   { title: 'Ưu đãi thành viên', desc: 'Tích điểm 3-7% cho mỗi đơn hàng' },
 ]
 
+const businessFlow = [
+  { title: 'Khách hàng đặt hàng', desc: 'Chọn sản phẩm, thêm giỏ hàng, thanh toán COD/chuyển khoản/ví điện tử.' },
+  { title: 'Quản trị viên duyệt', desc: 'Xác minh thanh toán, đối chiếu tồn kho, phân loại đơn theo khu vực.' },
+  { title: 'Kho chuẩn bị & đóng gói', desc: 'Giữ tồn kho, đóng gói chống sốc, in mã vận đơn, bàn giao cho đơn vị giao.' },
+  { title: 'Vận chuyển & cập nhật trạng thái', desc: 'Gửi mã vận đơn, cập nhật trạng thái pending/paid/shipping/completed realtime.' },
+  { title: 'Chăm sóc sau bán', desc: 'Kích hoạt bảo hành, ghi nhận đánh giá, hỗ trợ đổi trả/hoàn tiền khi cần.' },
+]
+
 export default function Home() {
   const [items, setItems] = useState(null)
 
@@ -115,6 +123,25 @@ export default function Home() {
             <div key={s.title} className="service-card">
               <b>{s.title}</b>
               <p className="muted" style={{ margin: '6px 0 0' }}>{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ marginTop: 18 }}>
+        <div className="section-header">
+          <div>
+            <h3 className="section-title">Quy trình nghiệp vụ chuẩn FPTShop</h3>
+            <p className="section-sub">Bám sát mô tả nghiệp vụ: khách hàng → quản trị viên → kho → giao vận → CSKH</p>
+          </div>
+          <div className="chip">Chuẩn hóa vận hành end-to-end</div>
+        </div>
+        <div className="service-grid">
+          {businessFlow.map((step, idx) => (
+            <div key={step.title} className="service-card">
+              <div className="badge">Bước {idx + 1}</div>
+              <b style={{ display: 'block', marginTop: 6 }}>{step.title}</b>
+              <p className="muted" style={{ margin: '6px 0 0' }}>{step.desc}</p>
             </div>
           ))}
         </div>

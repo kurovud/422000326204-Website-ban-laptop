@@ -2,6 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -24,6 +26,15 @@ app.use('/api/auth', authRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/users', userRoutes)
+
+// Serve frontend build (SPA) when deployed together
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const clientDist = path.join(__dirname, '../../client/dist')
+app.use(express.static(clientDist))
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next()
+  return res.sendFile(path.join(clientDist, 'index.html'))
+})
 
 app.use(errorHandler)
 

@@ -4,6 +4,7 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fs from 'fs'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -29,12 +30,24 @@ app.use('/api/users', userRoutes)
 
 // Serve frontend build (SPA) when deployed together
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const clientDist = path.join(__dirname, '../../client/dist')
-app.use(express.static(clientDist))
-app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/api')) return next()
-  return res.sendFile(path.join(clientDist, 'index.html'))
-})
+const clientDist = path.resolve(__dirname, '../../client/dist')
+const clientEntry = path.join(clientDist, 'index.html')
+const hasClientBuild = fs.existsSync(clientEntry)
+
+if (hasClientBuild) {
+  app.use(express.static(clientDist))
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next()
+    return res.sendFile(clientEntry)
+  })
+} else {
+  // Friendly hint instead of "Cannot GET /admin" when build assets are missing
+  app.get(['/', '/admin*'], (req, res) => {
+    return res.status(503).json({
+      message: 'Frontend build is missing. Run "npm run build -w client" and restart the server to load the admin UI.'
+    })
+  })
+}
 
 app.use(errorHandler)
 

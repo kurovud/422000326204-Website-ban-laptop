@@ -112,7 +112,7 @@ export default function ManageProduct({ embedded = false }) {
 
       <form className="surface" style={{ margin: '12px 0' }} onSubmit={onSubmit}>
         <div className="row">
-          <input className="input" placeholder="SKU" value={form.sku} onChange={e => setForm({ ...form, sku: e.target.value })} required />
+          <input className="input" placeholder="SKU" value={form.sku} onChange={e => setForm({ ...form, sku: e.target.value.toUpperCase() })} required />
           <input className="input" placeholder="Tên sản phẩm" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
           <select className="input" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
             <option value="laptop">Laptop</option>
@@ -131,15 +131,16 @@ export default function ManageProduct({ embedded = false }) {
         </div>
       </form>
 
-      <div className="row" style={{ marginBottom: 10 }}>
-        <input className="input" placeholder="Tìm theo tên/SKU" value={q} onChange={e => setQ(e.target.value)} />
-        <select className="input" style={{ width: 200 }} value={type} onChange={e => setType(e.target.value)}>
-          <option value="">Tất cả</option>
-          <option value="laptop">Laptop</option>
-          <option value="pc">PC</option>
-          <option value="component">Linh kiện</option>
-        </select>
-      </div>
+        <div className="row" style={{ marginBottom: 10 }}>
+          <input className="input" placeholder="Tìm theo tên/SKU" value={q} onChange={e => setQ(e.target.value)} />
+          <select className="input" style={{ width: 200 }} value={type} onChange={e => setType(e.target.value)}>
+            <option value="">Tất cả</option>
+            <option value="laptop">Laptop</option>
+            <option value="pc">PC</option>
+            <option value="component">Linh kiện</option>
+          </select>
+          <button className="btn btn-outline" type="button" onClick={() => { setQ(''); setType(''); }}>Xoá lọc</button>
+        </div>
 
       {loading && <div className="muted">Đang tải dữ liệu...</div>}
 

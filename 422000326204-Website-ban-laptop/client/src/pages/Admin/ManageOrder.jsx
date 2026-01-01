@@ -9,8 +9,9 @@ export default function ManageOrder() {
   const [orders, setOrders] = useState([])
   const [filter, setFilter] = useState('')
   const [loading, setLoading] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(null)
   const [message, setMessage] = useState(null)
+  const [selected, setSelected] = useState(null)
 
   const load = async () => {
     setLoading(true)
@@ -28,7 +29,7 @@ export default function ManageOrder() {
   useEffect(() => { load() }, [])
 
   const onUpdate = async (id, status) => {
-    setRefreshing(true)
+    setRefreshing(id)
     try {
       await updateOrderStatus(id, status)
       setMessage({ type: 'success', text: 'Đã cập nhật trạng thái' })
@@ -36,7 +37,7 @@ export default function ManageOrder() {
     } catch (e) {
       setMessage({ type: 'error', text: 'Cập nhật trạng thái thất bại' })
     } finally {
-      setRefreshing(false)
+      setRefreshing(null)
     }
   }
 
@@ -68,6 +69,10 @@ export default function ManageOrder() {
           <option value="">Tất cả trạng thái</option>
           {statuses.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
+        <select className="input" style={{ width: 220 }} value={selected || ''} onChange={e => setSelected(e.target.value ? Number(e.target.value) : null)}>
+          <option value="">Chọn đơn để chỉnh sửa nhanh</option>
+          {orders.map(o => <option key={o.id} value={o.id}>{o.code} - {o.status}</option>)}
+        </select>
         <button className="btn btn-outline" onClick={load} disabled={loading}>Làm mới</button>
       </div>
 
@@ -89,7 +94,7 @@ export default function ManageOrder() {
           </thead>
           <tbody>
             {filtered.map((o) => (
-              <tr key={o.id} style={{ borderTop: '1px solid #e2e8f0' }}>
+              <tr key={o.id} style={{ borderTop: '1px solid #e2e8f0', background: selected === o.id ? '#f8fafc' : undefined }}>
                 <td style={{ padding: 10, fontWeight: 600 }}>{o.code}</td>
                 <td style={{ padding: 10 }}>{o.email}</td>
                 <td style={{ padding: 10, minWidth: 220 }}>
@@ -116,7 +121,7 @@ export default function ManageOrder() {
                   <select className="input" value={o.status} onChange={e => onUpdate(o.id, e.target.value)}>
                     {statuses.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
-                  {refreshing && <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>Đang cập nhật...</div>}
+                  {refreshing === o.id && <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>Đang cập nhật...</div>}
                 </td>
               </tr>
             ))}

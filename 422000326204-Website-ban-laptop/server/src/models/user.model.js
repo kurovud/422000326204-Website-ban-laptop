@@ -35,3 +35,11 @@ export async function listUsers() {
   )
   return rows
 }
+
+export async function updateUserRoleStatus(id, { roleId, isActive }) {
+  const [res] = await pool.query(
+    'UPDATE users SET role_id=?, is_active=? WHERE id=?',
+    [roleId, isActive ? 1 : 0, id]
+  )
+  return res.affectedRows === 1
+}

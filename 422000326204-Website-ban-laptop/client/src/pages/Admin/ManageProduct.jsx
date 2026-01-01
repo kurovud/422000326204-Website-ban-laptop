@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createProduct, deleteProduct, getProducts, updateProduct } from '../../services/product.service.js'
 import { formatPrice } from '../../utils/formatPrice.js'
+import AdminLayout from '../../components/Admin/AdminLayout.jsx'
 
 const emptyProduct = { sku: '', name: '', type: 'laptop', price: 0, stock: 0, description: '' }
 
-export default function ManageProduct() {
+export default function ManageProduct({ embedded = false }) {
   const [items, setItems] = useState([])
   const [form, setForm] = useState(emptyProduct)
   const [editingId, setEditingId] = useState(null)
@@ -96,11 +97,8 @@ export default function ManageProduct() {
     ]
   }, [items])
 
-  return (
-    <div className="card">
-      <h2>Quản lý sản phẩm</h2>
-      <p className="muted">Tạo, cập nhật, xoá sản phẩm; quản lý tồn kho và giá trị danh mục.</p>
-
+  const content = (
+    <>
       {message && <div className={`alert ${message.type}`}>{message.text}</div>}
 
       <div className="grid" style={{ marginBottom: 12 }}>
@@ -182,6 +180,17 @@ export default function ManageProduct() {
           </div>
         </div>
       ))}
-    </div>
+    </>
+  )
+
+  if (embedded) return content
+
+  return (
+    <AdminLayout
+      title="Quản lý sản phẩm"
+      subtitle="Tạo, cập nhật, xoá sản phẩm; quản lý tồn kho và giá trị danh mục."
+    >
+      {content}
+    </AdminLayout>
   )
 }

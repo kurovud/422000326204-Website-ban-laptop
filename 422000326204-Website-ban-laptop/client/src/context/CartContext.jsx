@@ -1,9 +1,43 @@
 import { createContext, useContext, useMemo, useState } from 'react'
+import { useEffect } from 'react'
 
 const CartContext = createContext(null)
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]) // {product, qty}
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('cart_items')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (Array.isArray(parsed)) setItems(parsed)
+      }
+    } catch (_) {
+      // ignore corrupted cache
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('cart_items', JSON.stringify(items))
+  }, [items])
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'cart_items') {
+        if (!e.newValue) {
+          setItems([])
+          return
+        }
+        try {
+          const next = JSON.parse(e.newValue)
+          if (Array.isArray(next)) setItems(next)
+        } catch (_) { /* ignore */ }
+      }
+    }
+    window.addEventListener('storage', handler)
+    return () => window.removeEventListener('storage', handler)
+  }, [])
 
   const add = (product, qty = 1) => {
     setItems(prev => {
@@ -18,7 +52,11 @@ export function CartProvider({ children }) {
   }
 
   const updateQty = (productId, qty) => {
-    setItems(prev => prev.map(x => x.product.id === productId ? { ...x, qty } : x))
+    setItems(prev => prev.map(x => {
+      if (x.product.id !== productId) return x
+      const safeQty = Number(qty)
+      return { ...x, qty: safeQty > 0 ? safeQty : 1 }
+    }))
   }
 
   const remove = (productId) => setItems(prev => prev.filter(x => x.product.id !== productId))

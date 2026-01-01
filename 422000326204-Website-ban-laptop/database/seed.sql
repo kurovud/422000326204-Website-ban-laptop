@@ -1,13 +1,14 @@
 USE techshop_db;
 
-INSERT IGNORE INTO roles (id, name) VALUES (1,'admin'), (2,'user');
+INSERT IGNORE INTO roles (id, name) VALUES (1,'admin'), (2,'user'), (3,'staff');
 
 -- Passwords are bcrypt hashes. Replace by running the app and registering, or use these prepared hashes:
 -- admin: Admin@123
 -- user:  User@1234
 INSERT IGNORE INTO users (id, email, password_hash, full_name, role_id) VALUES
 (1, 'admin@techshop.vn', '$2b$10$2UA0m1ZvrTLFo8OsAJ8bZuR2YzdiV4jx2x3t77DqVC.6NzzQiOt/q', 'Quản trị viên', 1),
-(2, 'user@techshop.vn',  '$2b$10$Y7rz/SCx5WS0xZMe2ZrWHuqJ9q734PrwA8MRpdIsbbc3kxUXWjNMC', 'Khách hàng mẫu', 2);
+(2, 'user@techshop.vn',  '$2b$10$Y7rz/SCx5WS0xZMe2ZrWHuqJ9q734PrwA8MRpdIsbbc3kxUXWjNMC', 'Khách hàng mẫu', 2),
+(3, 'staff@techshop.vn', '$2a$10$gSB0Rfp8oqiCHNx44IVGzu7OTomdX6GJDL8OXuE.0A5UX5.WQ7o6.', 'Nhân viên kho', 3);
 
 INSERT IGNORE INTO categories (id, name, parent_id) VALUES
 (1,'Laptop',NULL),

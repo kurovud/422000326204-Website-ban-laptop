@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createProduct, deleteProduct, getProducts, updateProduct } from '../../services/product.service.js'
 import { formatPrice } from '../../utils/formatPrice.js'
+import AdminLayout from '../../components/Admin/AdminLayout.jsx'
 
 const emptyProduct = { sku: '', name: '', type: 'laptop', price: 0, stock: 0, description: '' }
 
-export default function ManageProduct() {
+export default function ManageProduct({ embedded = false }) {
   const [items, setItems] = useState([])
   const [form, setForm] = useState(emptyProduct)
   const [editingId, setEditingId] = useState(null)
@@ -96,11 +97,8 @@ export default function ManageProduct() {
     ]
   }, [items])
 
-  return (
-    <div className="card">
-      <h2>Quản lý sản phẩm</h2>
-      <p className="muted">Tạo, cập nhật, xoá sản phẩm; quản lý tồn kho và giá trị danh mục.</p>
-
+  const content = (
+    <>
       {message && <div className={`alert ${message.type}`}>{message.text}</div>}
 
       <div className="grid" style={{ marginBottom: 12 }}>
@@ -114,7 +112,7 @@ export default function ManageProduct() {
 
       <form className="surface" style={{ margin: '12px 0' }} onSubmit={onSubmit}>
         <div className="row">
-          <input className="input" placeholder="SKU" value={form.sku} onChange={e => setForm({ ...form, sku: e.target.value })} required />
+          <input className="input" placeholder="SKU" value={form.sku} onChange={e => setForm({ ...form, sku: e.target.value.toUpperCase() })} required />
           <input className="input" placeholder="Tên sản phẩm" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
           <select className="input" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
             <option value="laptop">Laptop</option>
@@ -133,15 +131,16 @@ export default function ManageProduct() {
         </div>
       </form>
 
-      <div className="row" style={{ marginBottom: 10 }}>
-        <input className="input" placeholder="Tìm theo tên/SKU" value={q} onChange={e => setQ(e.target.value)} />
-        <select className="input" style={{ width: 200 }} value={type} onChange={e => setType(e.target.value)}>
-          <option value="">Tất cả</option>
-          <option value="laptop">Laptop</option>
-          <option value="pc">PC</option>
-          <option value="component">Linh kiện</option>
-        </select>
-      </div>
+        <div className="row" style={{ marginBottom: 10 }}>
+          <input className="input" placeholder="Tìm theo tên/SKU" value={q} onChange={e => setQ(e.target.value)} />
+          <select className="input" style={{ width: 200 }} value={type} onChange={e => setType(e.target.value)}>
+            <option value="">Tất cả</option>
+            <option value="laptop">Laptop</option>
+            <option value="pc">PC</option>
+            <option value="component">Linh kiện</option>
+          </select>
+          <button className="btn btn-outline" type="button" onClick={() => { setQ(''); setType(''); }}>Xoá lọc</button>
+        </div>
 
       {loading && <div className="muted">Đang tải dữ liệu...</div>}
 
@@ -182,6 +181,17 @@ export default function ManageProduct() {
           </div>
         </div>
       ))}
-    </div>
+    </>
+  )
+
+  if (embedded) return content
+
+  return (
+    <AdminLayout
+      title="Quản lý sản phẩm"
+      subtitle="Tạo, cập nhật, xoá sản phẩm; quản lý tồn kho và giá trị danh mục."
+    >
+      {content}
+    </AdminLayout>
   )
 }

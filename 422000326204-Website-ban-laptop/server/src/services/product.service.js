@@ -16,18 +16,36 @@ export async function detail(id) {
 }
 
 export async function create(payload) {
-  const id = await ProductModel.createProduct(payload)
-  return await ProductModel.getProductById(id)
+  try {
+    const id = await ProductModel.createProduct(payload)
+    return await ProductModel.getProductById(id)
+  } catch (e) {
+    if (e?.code === 'ER_DUP_ENTRY') {
+      const err = new Error('SKU đã tồn tại, vui lòng dùng mã khác')
+      err.status = 400
+      throw err
+    }
+    throw e
+  }
 }
 
 export async function update(id, payload) {
-  const ok = await ProductModel.updateProduct(id, payload)
-  if (!ok) {
-    const err = new Error('Không tìm thấy sản phẩm để cập nhật')
-    err.status = 404
-    throw err
+  try {
+    const ok = await ProductModel.updateProduct(id, payload)
+    if (!ok) {
+      const err = new Error('Không tìm thấy sản phẩm để cập nhật')
+      err.status = 404
+      throw err
+    }
+    return await ProductModel.getProductById(id)
+  } catch (e) {
+    if (e?.code === 'ER_DUP_ENTRY') {
+      const err = new Error('SKU đã tồn tại, vui lòng dùng mã khác')
+      err.status = 400
+      throw err
+    }
+    throw e
   }
-  return await ProductModel.getProductById(id)
 }
 
 export async function remove(id) {

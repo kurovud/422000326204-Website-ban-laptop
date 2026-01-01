@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { listOrdersAdmin, updateOrderStatus } from '../../services/order.service.js'
 import { formatPrice } from '../../utils/formatPrice.js'
+import AdminLayout from '../../components/Admin/AdminLayout.jsx'
 
 const statuses = ['pending', 'paid', 'shipping', 'completed', 'cancelled']
 
@@ -8,8 +9,9 @@ export default function ManageOrder() {
   const [orders, setOrders] = useState([])
   const [filter, setFilter] = useState('')
   const [loading, setLoading] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(null)
   const [message, setMessage] = useState(null)
+  const [selected, setSelected] = useState(null)
 
   const load = async () => {
     setLoading(true)
@@ -27,7 +29,7 @@ export default function ManageOrder() {
   useEffect(() => { load() }, [])
 
   const onUpdate = async (id, status) => {
-    setRefreshing(true)
+    setRefreshing(id)
     try {
       await updateOrderStatus(id, status)
       setMessage({ type: 'success', text: 'Đã cập nhật trạng thái' })
@@ -35,7 +37,7 @@ export default function ManageOrder() {
     } catch (e) {
       setMessage({ type: 'error', text: 'Cập nhật trạng thái thất bại' })
     } finally {
-      setRefreshing(false)
+      setRefreshing(null)
     }
   }
 
@@ -46,9 +48,10 @@ export default function ManageOrder() {
   }))
 
   return (
-    <div className="card">
-      <h2>Quản lý đơn hàng</h2>
-      <p className="muted">Theo dõi tiến độ, cập nhật trạng thái và hỗ trợ khách hàng.</p>
+    <AdminLayout
+      title="Quản lý đơn hàng"
+      subtitle="Theo dõi tiến độ, cập nhật trạng thái và hỗ trợ khách hàng."
+    >
 
       {message && <div className={`alert ${message.type}`}>{message.text}</div>}
 
@@ -66,6 +69,10 @@ export default function ManageOrder() {
           <option value="">Tất cả trạng thái</option>
           {statuses.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
+        <select className="input" style={{ width: 220 }} value={selected || ''} onChange={e => setSelected(e.target.value ? Number(e.target.value) : null)}>
+          <option value="">Chọn đơn để chỉnh sửa nhanh</option>
+          {orders.map(o => <option key={o.id} value={o.id}>{o.code} - {o.status}</option>)}
+        </select>
         <button className="btn btn-outline" onClick={load} disabled={loading}>Làm mới</button>
       </div>
 
@@ -77,6 +84,8 @@ export default function ManageOrder() {
             <tr style={{ textAlign: 'left', background: '#f8fafc' }}>
               <th style={{ padding: 10 }}>Mã đơn</th>
               <th style={{ padding: 10 }}>Khách hàng</th>
+              <th style={{ padding: 10 }}>Sản phẩm</th>
+              <th style={{ padding: 10 }}>Giao nhận</th>
               <th style={{ padding: 10 }}>Tổng tiền</th>
               <th style={{ padding: 10 }}>Trạng thái</th>
               <th style={{ padding: 10 }}>Ngày</th>
@@ -85,9 +94,24 @@ export default function ManageOrder() {
           </thead>
           <tbody>
             {filtered.map((o) => (
-              <tr key={o.id} style={{ borderTop: '1px solid #e2e8f0' }}>
+              <tr key={o.id} style={{ borderTop: '1px solid #e2e8f0', background: selected === o.id ? '#f8fafc' : undefined }}>
                 <td style={{ padding: 10, fontWeight: 600 }}>{o.code}</td>
                 <td style={{ padding: 10 }}>{o.email}</td>
+                <td style={{ padding: 10, minWidth: 220 }}>
+                  {o.items?.length ? (
+                    <ul style={{ margin: 0, paddingLeft: 18 }}>
+                      {o.items.map((it) => (
+                        <li key={`${o.id}-${it.productId}-${it.qty}`}>
+                          {it.name} x{it.qty}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : <span className="muted">Chưa có mục</span>}
+                </td>
+                <td style={{ padding: 10 }}>
+                  <div className="muted">{o.phone}</div>
+                  <div>{o.shipping_address}</div>
+                </td>
                 <td style={{ padding: 10 }}>{formatPrice(o.total)}</td>
                 <td style={{ padding: 10 }}>
                   <span className={`status ${o.status}`}>{o.status}</span>
@@ -97,18 +121,18 @@ export default function ManageOrder() {
                   <select className="input" value={o.status} onChange={e => onUpdate(o.id, e.target.value)}>
                     {statuses.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
-                  {refreshing && <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>Đang cập nhật...</div>}
+                  {refreshing === o.id && <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>Đang cập nhật...</div>}
                 </td>
               </tr>
             ))}
             {!filtered.length && (
               <tr>
-                <td colSpan={6} style={{ padding: 12, color: '#64748b' }}>Không có đơn hàng.</td>
+                <td colSpan={8} style={{ padding: 12, color: '#64748b' }}>Không có đơn hàng.</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-    </div>
+    </AdminLayout>
   )
 }

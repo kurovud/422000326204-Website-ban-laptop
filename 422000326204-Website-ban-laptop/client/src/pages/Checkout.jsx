@@ -31,22 +31,52 @@ export default function Checkout() {
   }
 
   return (
-    <div className="card" style={{ maxWidth: 640, margin: '0 auto' }}>
-      <h2>Thanh toán</h2>
-      <p>Tổng tiền: <b>{formatPrice(total)}</b></p>
+    <div className="grid gap-6 lg:grid-cols-[1fr_0.6fr]">
+      <div className="card p-6">
+        <h2 className="text-xl font-semibold text-slate-900">Thông tin thanh toán</h2>
 
-      {err && <div className="card" style={{ background: '#fff7ed' }}>{err}</div>}
-      {ok && <div className="card" style={{ background: '#ecfdf5' }}>{ok}</div>}
+        {err && <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">{err}</div>}
+        {ok && <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">{ok}</div>}
 
-      <form onSubmit={onSubmit}>
-        <div style={{ marginBottom: 10 }}>
-          <input className="input" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="Số điện thoại" />
+        <form className="mt-6 space-y-4" onSubmit={onSubmit}>
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Số điện thoại</label>
+            <input className="input mt-2" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="090..." />
+          </div>
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Địa chỉ giao hàng</label>
+            <textarea
+              className="input mt-2"
+              rows="3"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Số nhà, đường, quận/huyện..."
+            />
+          </div>
+          <button className="btn btn-primary" type="submit">Xác nhận đặt hàng</button>
+        </form>
+      </div>
+      <div className="card p-6">
+        <h3 className="text-lg font-semibold text-slate-900">Tóm tắt thanh toán</h3>
+        <div className="mt-4 space-y-2 text-sm text-slate-600">
+          <div className="flex justify-between">
+            <span>Số sản phẩm</span>
+            <span>{items.length}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Tạm tính</span>
+            <span>{formatPrice(total)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Ưu đãi</span>
+            <span>0₫</span>
+          </div>
+          <div className="flex justify-between border-t border-slate-100 pt-3 text-base font-semibold text-slate-900">
+            <span>Tổng cộng</span>
+            <span>{formatPrice(total)}</span>
+          </div>
         </div>
-        <div style={{ marginBottom: 10 }}>
-          <textarea className="input" rows="3" value={address} onChange={e=>setAddress(e.target.value)} placeholder="Địa chỉ giao hàng" />
-        </div>
-        <button className="btn btn-primary" type="submit">Xác nhận đặt hàng</button>
-      </form>
+      </div>
     </div>
   )
 }

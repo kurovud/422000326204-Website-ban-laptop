@@ -9,6 +9,7 @@ import ProductDetail from './pages/ProductDetail.jsx'
 import Cart from './pages/Cart.jsx'
 import Checkout from './pages/Checkout.jsx'
 import OrderHistory from './pages/OrderHistory.jsx'
+import Chatbot from './pages/Chatbot.jsx'
 import AdminDashboard from './pages/Admin/Dashboard.jsx'
 import ManageProduct from './pages/Admin/ManageProduct.jsx'
 import ManageOrder from './pages/Admin/ManageOrder.jsx'
@@ -30,7 +31,7 @@ export default function App() {
       <CartProvider>
         <div className="app">
           <Header />
-          <main className="container">
+          <main className="container py-8">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
@@ -40,6 +41,7 @@ export default function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/orders" element={<OrderHistory />} />
+              <Route path="/chatbot" element={<Chatbot />} />
 
               <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
               <Route path="/admin/products" element={<AdminRoute><ManageProduct /></AdminRoute>} />

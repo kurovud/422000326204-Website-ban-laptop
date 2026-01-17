@@ -30,7 +30,7 @@ export default function App() {
       <CartProvider>
         <div className="app">
           <Header />
-          <main className="container">
+          <main className="container py-8">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />

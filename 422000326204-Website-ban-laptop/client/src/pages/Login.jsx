@@ -21,21 +21,50 @@ export default function Login() {
   }
 
   return (
-    <div className="card" style={{ maxWidth: 420, margin: '0 auto' }}>
-      <h2>Đăng nhập</h2>
-      {err && <div className="card" style={{ background: '#fff7ed' }}>{err}</div>}
-      <form onSubmit={onSubmit}>
-        <div style={{ marginBottom: 10 }}>
-          <input className="input" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" />
+    <div className="mx-auto grid max-w-3xl gap-6 lg:grid-cols-[1fr_1fr]">
+      <div className="card p-6">
+        <h2 className="text-xl font-semibold text-slate-900">Đăng nhập</h2>
+        <p className="mt-2 text-sm text-slate-500">Chào mừng bạn quay lại TechShop.</p>
+        {err && <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">{err}</div>}
+        <form className="mt-6 space-y-4" onSubmit={onSubmit}>
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Email</label>
+            <input className="input mt-2" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+          </div>
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Mật khẩu</label>
+            <input
+              className="input mt-2"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mật khẩu"
+            />
+          </div>
+          <button className="btn btn-primary w-full" type="submit">Đăng nhập</button>
+          <div className="text-center text-sm text-slate-500">
+            Chưa có tài khoản? <Link className="font-semibold text-slate-700" to="/register">Đăng ký</Link>
+          </div>
+        </form>
+      </div>
+      <div className="card flex flex-col justify-between bg-slate-900 p-6 text-white">
+        <div>
+          <h3 className="text-xl font-semibold">Đồng hành cùng game thủ & creator</h3>
+          <p className="mt-2 text-sm text-slate-200">
+            Đăng nhập để theo dõi đơn hàng, nhận ưu đãi và cấu hình phù hợp nhất.
+          </p>
         </div>
-        <div style={{ marginBottom: 10 }}>
-          <input className="input" type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Mật khẩu" />
+        <div className="mt-6 space-y-3 text-sm text-slate-200">
+          <div className="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3">
+            <span>Ưu đãi hội viên</span>
+            <span className="font-semibold">Giảm 5%</span>
+          </div>
+          <div className="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3">
+            <span>Hỗ trợ kỹ thuật</span>
+            <span className="font-semibold">24/7</span>
+          </div>
         </div>
-        <button className="btn btn-primary" type="submit">Đăng nhập</button>
-        <div style={{ marginTop: 10 }}>
-          <small>Chưa có tài khoản? <Link to="/register">Đăng ký</Link></small>
-        </div>
-      </form>
+      </div>
     </div>
   )
 }

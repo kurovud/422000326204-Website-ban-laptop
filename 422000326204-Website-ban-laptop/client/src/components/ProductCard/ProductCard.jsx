@@ -2,17 +2,26 @@ import { Link } from 'react-router-dom'
 import { formatPrice } from '../../utils/formatPrice.js'
 
 export default function ProductCard({ p }) {
+  const categoryLabel = {
+    laptop: 'Laptop',
+    pc: 'PC',
+    linhkien: 'Linh kiện'
+  }[p.category] || 'Sản phẩm'
+
   return (
-    <div className="card" style={{ width: 260 }}>
-      <div style={{ height: 140, background: '#f3f4f6', borderRadius: 10, marginBottom: 10 }} />
-      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
-        <b style={{ fontSize: 14 }}>{p.name}</b>
-        <span className="badge">{p.type}</span>
+    <div className="card flex h-full flex-col p-4">
+      <div className="flex h-36 items-center justify-center rounded-xl bg-gradient-to-br from-slate-100 via-slate-50 to-white text-slate-400">
+        Ảnh sản phẩm
       </div>
-      <div style={{ marginTop: 8 }}>{formatPrice(p.price)}</div>
-      <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
-        <Link className="btn btn-outline" to={`/products/${p.id}`}>Chi tiết</Link>
-        <Link className="btn btn-primary" to={`/products/${p.id}`}>Mua</Link>
+      <div className="mt-4 flex items-start justify-between gap-3">
+        <h3 className="text-sm font-semibold text-slate-900">{p.name}</h3>
+        <span className="badge">{categoryLabel}</span>
+      </div>
+      <div className="mt-2 text-base font-bold text-slate-900">{formatPrice(p.price)}</div>
+      <p className="mt-2 text-sm text-slate-500">{p.description || 'Cấu hình tối ưu cho hiệu năng ổn định.'}</p>
+      <div className="mt-auto flex gap-2 pt-4">
+        <Link className="btn btn-outline flex-1" to={`/products/${p.id}`}>Chi tiết</Link>
+        <Link className="btn btn-primary flex-1" to={`/products/${p.id}`}>Mua</Link>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 # 💻 TechShop - Website bán Laptop, PC & Linh kiện Build PC
 **MSSV/Project Code:** 422000326204  
-**Stack chính:** React.js (Vite) + Node.js (Express) + MySQL  
+**Stack chính:** ReactJS + Tailwind + Axios (Frontend) | FastAPI + PostgreSQL + MongoDB (Backend) | WebSocket + LLM (Chatbot)  
 
 ---
 
@@ -10,65 +10,47 @@ TechShop là website thương mại điện tử chuyên bán:
 - PC nguyên bộ (văn phòng / gaming / đồ họa)
 - Linh kiện build PC (CPU, Mainboard, RAM, SSD/HDD, VGA, PSU, Case, tản nhiệt...)
 
-Mục tiêu: xây dựng hệ thống theo hướng thực tế doanh nghiệp, tách **Frontend/Backend**, có **xác thực JWT**, **đặt hàng**, và **CSDL chuẩn hóa**.
+Mục tiêu: xây dựng hệ thống theo hướng thực tế doanh nghiệp, tách **Frontend/Backend**, có **xác thực JWT**, **đặt hàng**, **Realtime WebSocket**, và **Chatbot** có thể học từ dữ liệu nội bộ.
 
 ---
 
-## 2) Tính năng đã có (Skeleton chạy được)
-### Người dùng
-- Đăng ký / Đăng nhập (JWT)
-- Xem danh sách sản phẩm, lọc theo loại, tìm kiếm theo tên/SKU
-- Xem chi tiết sản phẩm
-- Giỏ hàng (local state)
-- Checkout (tạo đơn hàng qua API)
-- Xem đơn hàng của tôi
-
-### Backend API
-- Auth: register / login / me
-- Products: list / detail
-- Orders: create / my orders  
-- Kiểm tra tồn kho khi tạo đơn, tự trừ tồn kho trong transaction
+## 2) Kiến trúc mới
+- **Frontend:** ReactJS (Vite) + TailwindCSS + Axios
+- **Backend:** FastAPI (Python)
+- **Database:** PostgreSQL (transactional) + MongoDB (document)
+- **Realtime:** WebSocket `/ws/chat`
+- **Chatbot:** LLM (GPT/LLaMA), Prompt Engineering, RAG + Vector Store nội bộ
+- **Triển khai:** Docker + Nginx (reverse proxy cho `/api` và `/ws`)
 
 ---
 
 ## 3) Cấu trúc thư mục
 ```
 422000326204-Website-ban-laptop/
-├── client/        # React + Vite
-├── server/        # Node.js + Express
-├── database/      # schema.sql + seed.sql
-├── docs/          # Test cases (docx)
+├── client/        # React + Vite + Tailwind
+├── server/        # FastAPI
+├── database/      # dữ liệu mẫu (tham khảo)
+├── docs/          # Test cases
+├── docker-compose.yml
 ├── README.md
-└── package.json   # workspace + chạy đồng thời FE/BE
+└── package.json   # chạy FE/BE dev song song
 ```
 
 ---
 
-## 4) Yêu cầu môi trường
-- Node.js 18+ (khuyến nghị)
-- MySQL 8+
-- npm 9+  
-
----
-
-## 5) Cài đặt & chạy dự án
-### Bước 1: Tạo database và dữ liệu mẫu
-Mở MySQL và chạy lần lượt:
-- `database/schema.sql`
-- `database/seed.sql`
-
-### Bước 2: Cài đặt dependencies
-Tại thư mục gốc:
+## 4) Cài đặt & chạy local
+### Bước 1: Cài dependencies
 ```bash
 npm install
 npm run install:all
 ```
 
-### Bước 3: Cấu hình ENV
-- Copy `server/.env.example` -> `server/.env` và chỉnh DB_USER/DB_PASS/DB_NAME cho đúng máy bạn.
-- Copy `client/.env.example` -> `client/.env` (mặc định OK)
+### Bước 2: Cấu hình ENV backend
+```bash
+cp server/.env.example server/.env
+```
 
-### Bước 4: Chạy dev (FE + BE cùng lúc)
+### Bước 3: Chạy dev (FE + BE)
 ```bash
 npm run dev
 ```
@@ -78,15 +60,17 @@ npm run dev
 
 ---
 
-## 6) Tài khoản test (seed)
-- Admin: `admin@techshop.vn` / `Admin@123`
-- User:  `user@techshop.vn`  / `User@1234`
+## 5) Chạy bằng Docker + Nginx
+```bash
+docker compose up --build
+```
 
-> Nếu bạn muốn đảm bảo hash đúng, bạn có thể tự đăng ký user bằng API `/api/auth/register`.
+- Frontend (Nginx): `http://localhost:8080`
+- Backend (FastAPI): `http://localhost:5000/api/health`
 
 ---
 
-## 7) API nhanh (mẫu)
+## 6) API nhanh
 ### Auth
 - `POST /api/auth/register`
 ```json
@@ -108,38 +92,43 @@ npm run dev
 {
   "phone":"0900000000",
   "shippingAddress":"HCM - Viet Nam",
-  "items":[{"productId":1,"qty":1}, {"productId":4,"qty":2}]
+  "items":[{"productId":1,"qty":1}, {"productId":2,"qty":2}]
 }
 ```
 - `GET /api/orders/my` (Bearer token)
 
 ---
 
-## 8) Thiết kế CSDL (chuẩn hóa)
-Các bảng chính:
-- roles, users
-- categories, products, product_images
-- orders, order_items
-- reviews
+## 7) Chatbot (RAG)
+### Nạp dữ liệu huấn luyện
+- `POST /api/chatbot/train`
+```json
+{ "texts": ["TechShop chuyên laptop gaming", "Dịch vụ bảo hành 12 tháng"] }
+```
 
-File SQL: `database/schema.sql`
+### Hỏi đáp
+- `POST /api/chatbot/ask`
+```json
+{ "question": "Bảo hành bao lâu?" }
+```
 
----
-
-## 9) Kiểm thử (Test Case)
-File test case theo form: `docs/TestCases_TechShop.docx`
-
----
-
-## 10) Hướng phát triển
-- CRUD sản phẩm/đơn hàng cho admin (đã có khung trang FE)
-- Upload ảnh sản phẩm (multer + static)
-- Thanh toán online (VNPay/MoMo)
-- Build PC theo ngân sách (gợi ý cấu hình)
-- Review/Rating sản phẩm, gợi ý sản phẩm liên quan
-- Dashboard doanh thu & thống kê
+### WebSocket
+- `ws://localhost:5000/ws/chat`
 
 ---
 
-## 11) License
+## 8) Tài khoản test
+- Admin: `admin@techshop.vn` / `Admin@123`
+- User:  `user@techshop.vn`  / `User@1234`
+
+---
+
+## 9) Ghi chú
+- Frontend giữ nguyên cấu trúc trang quản trị (Admin) và hoạt động với backend FastAPI mới.
+- PostgreSQL & MongoDB đã cấu hình sẵn trong Docker Compose.
+- Nếu muốn dùng GPT/LLaMA thực tế, cấu hình biến môi trường `LLM_PROVIDER` và bổ sung adapter trong `server/app/services/chatbot.py`.
+
+---
+
+## 10) License
 Phục vụ mục đích học tập/đồ án.

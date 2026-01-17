@@ -3,14 +3,14 @@
   "private": true,
   "version": "1.0.0",
   "workspaces": [
-    "client",
-    "server"
+    "client"
   ],
   "scripts": {
-    "dev": "concurrently -n CLIENT,SERVER -c auto \"npm run dev -w client\" \"npm run dev -w server\"",
-    "install:all": "npm install -w client && npm install -w server",
+    "dev": "concurrently -n CLIENT,SERVER -c auto \"npm run dev -w client\" \"npm run dev:server\"",
+    "dev:server": "cd server && uvicorn app.main:app --reload --port 5000",
+    "install:all": "npm install -w client",
     "build": "npm run build -w client",
-    "start": "npm run start -w server"
+    "start": "npm run dev:server"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"

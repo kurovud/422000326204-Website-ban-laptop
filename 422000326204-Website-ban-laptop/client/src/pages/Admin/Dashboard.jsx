@@ -1,9 +1,37 @@
+import { useEffect, useState } from 'react'
+import { getAdminOrders, getAdminUsers } from '../../services/admin.service.js'
+import { getProducts } from '../../services/product.service.js'
+
 export default function Dashboard() {
-  const stats = [
-    { label: 'Đơn hàng hôm nay', value: '18' },
-    { label: 'Doanh thu', value: '320M' },
-    { label: 'Sản phẩm tồn', value: '1,245' }
-  ]
+  const [stats, setStats] = useState([
+    { label: 'Đơn hàng', value: '-' },
+    { label: 'Khách hàng', value: '-' },
+    { label: 'Sản phẩm', value: '-' }
+  ])
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [orders, users, products] = await Promise.all([
+          getAdminOrders(),
+          getAdminUsers(),
+          getProducts()
+        ])
+        setStats([
+          { label: 'Đơn hàng', value: orders.length },
+          { label: 'Khách hàng', value: users.length },
+          { label: 'Sản phẩm', value: products.length }
+        ])
+      } catch (err) {
+        setStats([
+          { label: 'Đơn hàng', value: 'N/A' },
+          { label: 'Khách hàng', value: 'N/A' },
+          { label: 'Sản phẩm', value: 'N/A' }
+        ])
+      }
+    }
+    load()
+  }, [])
 
   return (
     <div className="space-y-6">
@@ -21,7 +49,7 @@ export default function Dashboard() {
       </div>
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-slate-900">Hoạt động gần đây</h3>
-        <p className="mt-2 text-sm text-slate-500">Chức năng quản trị chi tiết sẽ được cập nhật ở các module.</p>
+        <p className="mt-2 text-sm text-slate-500">Dữ liệu được cập nhật từ hệ thống đơn hàng và khách hàng.</p>
       </div>
     </div>
   )

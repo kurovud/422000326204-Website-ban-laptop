@@ -18,6 +18,7 @@ export default function Header() {
           <Link to="/products" className="text-sm text-slate-500 hover:text-slate-800">Laptop</Link>
           <Link to="/products" className="text-sm text-slate-500 hover:text-slate-800">PC</Link>
           <Link to="/products" className="text-sm text-slate-500 hover:text-slate-800">Linh kiện</Link>
+          <Link to="/chatbot" className="text-sm text-slate-500 hover:text-slate-800">Chatbot</Link>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 text-sm">

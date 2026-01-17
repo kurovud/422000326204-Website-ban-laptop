@@ -38,13 +38,13 @@ export default function ProductList() {
           </div>
           <div className="flex min-w-[200px] flex-col items-start">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Kết quả</span>
-            <span className="mt-2 text-sm text-slate-600">{items.data.length} sản phẩm</span>
+            <span className="mt-2 text-sm text-slate-600">{items.length} sản phẩm</span>
           </div>
         </div>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {items.data.map((p) => (
+        {items.map((p) => (
           <ProductCard key={p.id} p={p} />
         ))}
       </div>

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import auth, orders, products, chatbot
+from app.api.routes import auth, orders, products, chatbot, admin
 from app.core.config import settings
 from app.services.chatbot import chat_engine
 
@@ -19,6 +19,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(products.router, prefix="/api/products", tags=["products"])
 app.include_router(orders.router, prefix="/api/orders", tags=["orders"])
 app.include_router(chatbot.router, prefix="/api/chatbot", tags=["chatbot"])
+app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 
 
 @app.get("/api/health")

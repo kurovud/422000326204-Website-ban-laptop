@@ -16,7 +16,7 @@ export default function ProductDetail() {
   }[p?.category] || 'Sản phẩm'
 
   useEffect(() => {
-    getProduct(id).then(res => setP(res.data))
+    getProduct(id).then(setP)
   }, [id])
 
   if (!p) return <Loading />

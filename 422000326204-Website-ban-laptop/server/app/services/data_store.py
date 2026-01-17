@@ -124,5 +124,11 @@ class InMemoryStore:
     def list_orders_for_user(self, user_id: int) -> List[Order]:
         return [o for o in self.orders.values() if o.user_id == user_id]
 
+    def list_orders(self) -> List[Order]:
+        return list(self.orders.values())
+
+    def list_users(self) -> List[User]:
+        return list(self.users.values())
+
 
 store = InMemoryStore()

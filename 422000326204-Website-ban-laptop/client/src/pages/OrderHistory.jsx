@@ -15,11 +15,11 @@ export default function OrderHistory() {
     <div className="card p-6">
       <h2 className="text-xl font-semibold text-slate-900">Lịch sử đơn hàng</h2>
       <p className="mt-2 text-sm text-slate-500">Theo dõi các đơn hàng gần đây của bạn.</p>
-      {orders.data.length === 0 ? (
+      {orders.length === 0 ? (
         <p className="mt-6 text-sm text-slate-600">Chưa có đơn hàng.</p>
       ) : (
         <div className="mt-6 space-y-4">
-          {orders.data.map((o) => (
+          {orders.map((o) => (
             <div key={o.id} className="rounded-2xl border border-slate-100 p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <b className="text-slate-900">Đơn #{o.id}</b>
